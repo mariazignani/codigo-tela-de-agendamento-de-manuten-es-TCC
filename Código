@@ -1,0 +1,1483 @@
+public void DisplayOpening()
+{
+    @Tag.TelaAtiva_Agenda = 1;
+    @Tag.salvarNovaManutenção = 0;
+ 
+    @Tag.açãoAgenda1 = -1;
+    @Tag.açãoAgenda2 = -1;
+    @Tag.açãoAgenda3 = -1;
+    @Tag.açãoAgenda4 = -1;
+    @Tag.açãoAgenda5 = -1;
+    @Tag.açãoAgenda6 = -1;
+    @Tag.açãoAgenda7 = -1;
+    @Tag.açãoAgenda8 = -1;
+    @Tag.açãoAgenda9 = -1;
+    @Tag.açãoAgenda10 = -1;
+    @Tag.açãoAgenda11 = -1;
+    @Tag.açãoAgenda12 = -1;
+    @Tag.açãoAgenda13 = -1;
+}
+ 
+ 
+public void DisplayIsOpen()
+{
+	// ============================================================
+    // CONTAGEM DE MANUTENÇÕES ATRASADAS
+    // ============================================================
+    int atrasadas = 0;
+
+    if (Atrasada(@Tag.linha1ocupada == 1, @Tag.linha1_status != 3, @Tag.linha1_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha2ocupada == 1, @Tag.linha2_status != 3, @Tag.linha2_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha3ocupada == 1, @Tag.linha3_status != 3, @Tag.linha3_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha4ocupada == 1, @Tag.linha4_status != 3, @Tag.linha4_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha5ocupada == 1, @Tag.linha5_status != 3, @Tag.linha5_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha6ocupada == 1, @Tag.linha6_status != 3, @Tag.linha6_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha7ocupada == 1, @Tag.linha7_status != 3, @Tag.linha7_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha8ocupada == 1, @Tag.linha8_status != 3, @Tag.linha8_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha9ocupada == 1, @Tag.linha9_status != 3, @Tag.linha9_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha10ocupada == 1, @Tag.linha10_status != 3, @Tag.linha10_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha11ocupada == 1, @Tag.linha11_status != 3, @Tag.linha11_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha12ocupada == 1, @Tag.linha12_status != 3, @Tag.linha12_data)) { atrasadas++; }
+    if (Atrasada(@Tag.linha13ocupada == 1, @Tag.linha13_status != 3, @Tag.linha13_data)) { atrasadas++; }
+
+    @Tag.ManuAtrasada = atrasadas;
+       
+        
+    // ============================================================
+    // 1. CONFERE LINHAS OCUPADAS
+    // ============================================================
+    if (string.IsNullOrWhiteSpace(@Tag.linha1_descrição)) { @Tag.linha1ocupada = 0; } else { @Tag.linha1ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha2_descrição)) { @Tag.linha2ocupada = 0; } else { @Tag.linha2ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha3_descrição)) { @Tag.linha3ocupada = 0; } else { @Tag.linha3ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha4_descrição)) { @Tag.linha4ocupada = 0; } else { @Tag.linha4ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha5_descrição)) { @Tag.linha5ocupada = 0; } else { @Tag.linha5ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha6_descrição)) { @Tag.linha6ocupada = 0; } else { @Tag.linha6ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha7_descrição)) { @Tag.linha7ocupada = 0; } else { @Tag.linha7ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha8_descrição)) { @Tag.linha8ocupada = 0; } else { @Tag.linha8ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha9_descrição)) { @Tag.linha9ocupada = 0; } else { @Tag.linha9ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha10_descrição)) { @Tag.linha10ocupada = 0; } else { @Tag.linha10ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha11_descrição)) { @Tag.linha11ocupada = 0; } else { @Tag.linha11ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha12_descrição)) { @Tag.linha12ocupada = 0; } else { @Tag.linha12ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha13_descrição)) { @Tag.linha13ocupada = 0; } else { @Tag.linha13ocupada = 1; }
+ 
+ 
+    // ============================================================
+    // 2. AÇÕES DOS DROPDOWNS (iniciar / concluir / excluir)
+    // ============================================================
+    bool excluiu = false;
+ 
+    // ---------------------------- LINHA 1 ----------------------------
+    if ((@Tag.linha1ocupada == 1) && (@Tag.açãoAgenda1 != -1) && (!excluiu))
+    {
+        int acao1 = @Tag.açãoAgenda1;
+        @Tag.açãoAgenda1 = -1;
+ 
+        if (acao1 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha1_status != 3)
+            {
+                @Tag.linha1_status = 2;
+            }
+        }
+     	else if (acao1 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha1_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha1_data, @Tag.linha1_motor, @Tag.linha1_descrição, @Tag.linha1_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha1_status = 3;
+		}
+        else if (acao1 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha1_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 2 -> linha 1
+            @Tag.linha1_data = @Tag.linha2_data;
+            @Tag.linha1_motor = @Tag.linha2_motor;
+            @Tag.linha1_descrição = @Tag.linha2_descrição;
+            @Tag.linha1_urgencia = @Tag.linha2_urgencia;
+            @Tag.linha1_status = @Tag.linha2_status;
+ 
+            // linha 3 -> linha 2
+            @Tag.linha2_data = @Tag.linha3_data;
+            @Tag.linha2_motor = @Tag.linha3_motor;
+            @Tag.linha2_descrição = @Tag.linha3_descrição;
+            @Tag.linha2_urgencia = @Tag.linha3_urgencia;
+            @Tag.linha2_status = @Tag.linha3_status;
+ 
+            // linha 4 -> linha 3
+            @Tag.linha3_data = @Tag.linha4_data;
+            @Tag.linha3_motor = @Tag.linha4_motor;
+            @Tag.linha3_descrição = @Tag.linha4_descrição;
+            @Tag.linha3_urgencia = @Tag.linha4_urgencia;
+            @Tag.linha3_status = @Tag.linha4_status;
+ 
+            // linha 5 -> linha 4
+            @Tag.linha4_data = @Tag.linha5_data;
+            @Tag.linha4_motor = @Tag.linha5_motor;
+            @Tag.linha4_descrição = @Tag.linha5_descrição;
+            @Tag.linha4_urgencia = @Tag.linha5_urgencia;
+            @Tag.linha4_status = @Tag.linha5_status;
+ 
+            // linha 6 -> linha 5
+            @Tag.linha5_data = @Tag.linha6_data;
+            @Tag.linha5_motor = @Tag.linha6_motor;
+            @Tag.linha5_descrição = @Tag.linha6_descrição;
+            @Tag.linha5_urgencia = @Tag.linha6_urgencia;
+            @Tag.linha5_status = @Tag.linha6_status;
+ 
+            // linha 7 -> linha 6
+            @Tag.linha6_data = @Tag.linha7_data;
+            @Tag.linha6_motor = @Tag.linha7_motor;
+            @Tag.linha6_descrição = @Tag.linha7_descrição;
+            @Tag.linha6_urgencia = @Tag.linha7_urgencia;
+            @Tag.linha6_status = @Tag.linha7_status;
+ 
+            // linha 8 -> linha 7
+            @Tag.linha7_data = @Tag.linha8_data;
+            @Tag.linha7_motor = @Tag.linha8_motor;
+            @Tag.linha7_descrição = @Tag.linha8_descrição;
+            @Tag.linha7_urgencia = @Tag.linha8_urgencia;
+            @Tag.linha7_status = @Tag.linha8_status;
+ 
+            // linha 9 -> linha 8
+            @Tag.linha8_data = @Tag.linha9_data;
+            @Tag.linha8_motor = @Tag.linha9_motor;
+            @Tag.linha8_descrição = @Tag.linha9_descrição;
+            @Tag.linha8_urgencia = @Tag.linha9_urgencia;
+            @Tag.linha8_status = @Tag.linha9_status;
+ 
+            // linha 10 -> linha 9
+            @Tag.linha9_data = @Tag.linha10_data;
+            @Tag.linha9_motor = @Tag.linha10_motor;
+            @Tag.linha9_descrição = @Tag.linha10_descrição;
+            @Tag.linha9_urgencia = @Tag.linha10_urgencia;
+            @Tag.linha9_status = @Tag.linha10_status;
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 2 ----------------------------
+    if ((@Tag.linha2ocupada == 1) && (@Tag.açãoAgenda2 != -1) && (!excluiu))
+    {
+        int acao2 = @Tag.açãoAgenda2;
+        @Tag.açãoAgenda2 = -1;
+ 
+        if (acao2 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha2_status != 3)
+            {
+                @Tag.linha2_status = 2;
+            }
+        }
+		else if (acao2 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha2_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha2_data, @Tag.linha2_motor, @Tag.linha2_descrição, @Tag.linha2_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha2_status = 3;
+		}
+        else if (acao2 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha2_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 3 -> linha 2
+            @Tag.linha2_data = @Tag.linha3_data;
+            @Tag.linha2_motor = @Tag.linha3_motor;
+            @Tag.linha2_descrição = @Tag.linha3_descrição;
+            @Tag.linha2_urgencia = @Tag.linha3_urgencia;
+            @Tag.linha2_status = @Tag.linha3_status;
+ 
+            // linha 4 -> linha 3
+            @Tag.linha3_data = @Tag.linha4_data;
+            @Tag.linha3_motor = @Tag.linha4_motor;
+            @Tag.linha3_descrição = @Tag.linha4_descrição;
+            @Tag.linha3_urgencia = @Tag.linha4_urgencia;
+            @Tag.linha3_status = @Tag.linha4_status;
+ 
+            // linha 5 -> linha 4
+            @Tag.linha4_data = @Tag.linha5_data;
+            @Tag.linha4_motor = @Tag.linha5_motor;
+            @Tag.linha4_descrição = @Tag.linha5_descrição;
+            @Tag.linha4_urgencia = @Tag.linha5_urgencia;
+            @Tag.linha4_status = @Tag.linha5_status;
+ 
+            // linha 6 -> linha 5
+            @Tag.linha5_data = @Tag.linha6_data;
+            @Tag.linha5_motor = @Tag.linha6_motor;
+            @Tag.linha5_descrição = @Tag.linha6_descrição;
+            @Tag.linha5_urgencia = @Tag.linha6_urgencia;
+            @Tag.linha5_status = @Tag.linha6_status;
+ 
+            // linha 7 -> linha 6
+            @Tag.linha6_data = @Tag.linha7_data;
+            @Tag.linha6_motor = @Tag.linha7_motor;
+            @Tag.linha6_descrição = @Tag.linha7_descrição;
+            @Tag.linha6_urgencia = @Tag.linha7_urgencia;
+            @Tag.linha6_status = @Tag.linha7_status;
+ 
+            // linha 8 -> linha 7
+            @Tag.linha7_data = @Tag.linha8_data;
+            @Tag.linha7_motor = @Tag.linha8_motor;
+            @Tag.linha7_descrição = @Tag.linha8_descrição;
+            @Tag.linha7_urgencia = @Tag.linha8_urgencia;
+            @Tag.linha7_status = @Tag.linha8_status;
+ 
+            // linha 9 -> linha 8
+            @Tag.linha8_data = @Tag.linha9_data;
+            @Tag.linha8_motor = @Tag.linha9_motor;
+            @Tag.linha8_descrição = @Tag.linha9_descrição;
+            @Tag.linha8_urgencia = @Tag.linha9_urgencia;
+            @Tag.linha8_status = @Tag.linha9_status;
+ 
+            // linha 10 -> linha 9
+            @Tag.linha9_data = @Tag.linha10_data;
+            @Tag.linha9_motor = @Tag.linha10_motor;
+            @Tag.linha9_descrição = @Tag.linha10_descrição;
+            @Tag.linha9_urgencia = @Tag.linha10_urgencia;
+            @Tag.linha9_status = @Tag.linha10_status;
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 3 ----------------------------
+    if ((@Tag.linha3ocupada == 1) && (@Tag.açãoAgenda3 != -1) && (!excluiu))
+    {
+        int acao3 = @Tag.açãoAgenda3;
+        @Tag.açãoAgenda3 = -1;
+ 
+        if (acao3 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha3_status != 3)
+            {
+                @Tag.linha3_status = 2;
+            }
+        }
+		else if (acao3 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha3_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha3_data, @Tag.linha3_motor, @Tag.linha3_descrição, @Tag.linha3_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha3_status = 3;
+		}
+        else if (acao3 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha3_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 4 -> linha 3
+            @Tag.linha3_data = @Tag.linha4_data;
+            @Tag.linha3_motor = @Tag.linha4_motor;
+            @Tag.linha3_descrição = @Tag.linha4_descrição;
+            @Tag.linha3_urgencia = @Tag.linha4_urgencia;
+            @Tag.linha3_status = @Tag.linha4_status;
+ 
+            // linha 5 -> linha 4
+            @Tag.linha4_data = @Tag.linha5_data;
+            @Tag.linha4_motor = @Tag.linha5_motor;
+            @Tag.linha4_descrição = @Tag.linha5_descrição;
+            @Tag.linha4_urgencia = @Tag.linha5_urgencia;
+            @Tag.linha4_status = @Tag.linha5_status;
+ 
+            // linha 6 -> linha 5
+            @Tag.linha5_data = @Tag.linha6_data;
+            @Tag.linha5_motor = @Tag.linha6_motor;
+            @Tag.linha5_descrição = @Tag.linha6_descrição;
+            @Tag.linha5_urgencia = @Tag.linha6_urgencia;
+            @Tag.linha5_status = @Tag.linha6_status;
+ 
+            // linha 7 -> linha 6
+            @Tag.linha6_data = @Tag.linha7_data;
+            @Tag.linha6_motor = @Tag.linha7_motor;
+            @Tag.linha6_descrição = @Tag.linha7_descrição;
+            @Tag.linha6_urgencia = @Tag.linha7_urgencia;
+            @Tag.linha6_status = @Tag.linha7_status;
+ 
+            // linha 8 -> linha 7
+            @Tag.linha7_data = @Tag.linha8_data;
+            @Tag.linha7_motor = @Tag.linha8_motor;
+            @Tag.linha7_descrição = @Tag.linha8_descrição;
+            @Tag.linha7_urgencia = @Tag.linha8_urgencia;
+            @Tag.linha7_status = @Tag.linha8_status;
+ 
+            // linha 9 -> linha 8
+            @Tag.linha8_data = @Tag.linha9_data;
+            @Tag.linha8_motor = @Tag.linha9_motor;
+            @Tag.linha8_descrição = @Tag.linha9_descrição;
+            @Tag.linha8_urgencia = @Tag.linha9_urgencia;
+            @Tag.linha8_status = @Tag.linha9_status;
+ 
+            // linha 10 -> linha 9
+            @Tag.linha9_data = @Tag.linha10_data;
+            @Tag.linha9_motor = @Tag.linha10_motor;
+            @Tag.linha9_descrição = @Tag.linha10_descrição;
+            @Tag.linha9_urgencia = @Tag.linha10_urgencia;
+            @Tag.linha9_status = @Tag.linha10_status;
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 4 ----------------------------
+    if ((@Tag.linha4ocupada == 1) && (@Tag.açãoAgenda4 != -1) && (!excluiu))
+    {
+        int acao4 = @Tag.açãoAgenda4;
+        @Tag.açãoAgenda4 = -1;
+ 
+        if (acao4 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha4_status != 3)
+            {
+                @Tag.linha4_status = 2;
+            }
+        }
+		else if (acao4 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha4_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha4_data, @Tag.linha4_motor, @Tag.linha4_descrição, @Tag.linha4_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha4_status = 3;
+		}
+        else if (acao4 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha4_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 5 -> linha 4
+            @Tag.linha4_data = @Tag.linha5_data;
+            @Tag.linha4_motor = @Tag.linha5_motor;
+            @Tag.linha4_descrição = @Tag.linha5_descrição;
+            @Tag.linha4_urgencia = @Tag.linha5_urgencia;
+            @Tag.linha4_status = @Tag.linha5_status;
+ 
+            // linha 6 -> linha 5
+            @Tag.linha5_data = @Tag.linha6_data;
+            @Tag.linha5_motor = @Tag.linha6_motor;
+            @Tag.linha5_descrição = @Tag.linha6_descrição;
+            @Tag.linha5_urgencia = @Tag.linha6_urgencia;
+            @Tag.linha5_status = @Tag.linha6_status;
+ 
+            // linha 7 -> linha 6
+            @Tag.linha6_data = @Tag.linha7_data;
+            @Tag.linha6_motor = @Tag.linha7_motor;
+            @Tag.linha6_descrição = @Tag.linha7_descrição;
+            @Tag.linha6_urgencia = @Tag.linha7_urgencia;
+            @Tag.linha6_status = @Tag.linha7_status;
+ 
+            // linha 8 -> linha 7
+            @Tag.linha7_data = @Tag.linha8_data;
+            @Tag.linha7_motor = @Tag.linha8_motor;
+            @Tag.linha7_descrição = @Tag.linha8_descrição;
+            @Tag.linha7_urgencia = @Tag.linha8_urgencia;
+            @Tag.linha7_status = @Tag.linha8_status;
+ 
+            // linha 9 -> linha 8
+            @Tag.linha8_data = @Tag.linha9_data;
+            @Tag.linha8_motor = @Tag.linha9_motor;
+            @Tag.linha8_descrição = @Tag.linha9_descrição;
+            @Tag.linha8_urgencia = @Tag.linha9_urgencia;
+            @Tag.linha8_status = @Tag.linha9_status;
+ 
+            // linha 10 -> linha 9
+            @Tag.linha9_data = @Tag.linha10_data;
+            @Tag.linha9_motor = @Tag.linha10_motor;
+            @Tag.linha9_descrição = @Tag.linha10_descrição;
+            @Tag.linha9_urgencia = @Tag.linha10_urgencia;
+            @Tag.linha9_status = @Tag.linha10_status;
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 5 ----------------------------
+    if ((@Tag.linha5ocupada == 1) && (@Tag.açãoAgenda5 != -1) && (!excluiu))
+    {
+        int acao5 = @Tag.açãoAgenda5;
+        @Tag.açãoAgenda5 = -1;
+ 
+        if (acao5 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha5_status != 3)
+            {
+                @Tag.linha5_status = 2;
+            }
+        }
+        else if (acao5 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha5_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha5_data, @Tag.linha5_motor, @Tag.linha5_descrição, @Tag.linha5_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha5_status = 3;
+		}
+        else if (acao5 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha5_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 6 -> linha 5
+            @Tag.linha5_data = @Tag.linha6_data;
+            @Tag.linha5_motor = @Tag.linha6_motor;
+            @Tag.linha5_descrição = @Tag.linha6_descrição;
+            @Tag.linha5_urgencia = @Tag.linha6_urgencia;
+            @Tag.linha5_status = @Tag.linha6_status;
+ 
+            // linha 7 -> linha 6
+            @Tag.linha6_data = @Tag.linha7_data;
+            @Tag.linha6_motor = @Tag.linha7_motor;
+            @Tag.linha6_descrição = @Tag.linha7_descrição;
+            @Tag.linha6_urgencia = @Tag.linha7_urgencia;
+            @Tag.linha6_status = @Tag.linha7_status;
+ 
+            // linha 8 -> linha 7
+            @Tag.linha7_data = @Tag.linha8_data;
+            @Tag.linha7_motor = @Tag.linha8_motor;
+            @Tag.linha7_descrição = @Tag.linha8_descrição;
+            @Tag.linha7_urgencia = @Tag.linha8_urgencia;
+            @Tag.linha7_status = @Tag.linha8_status;
+ 
+            // linha 9 -> linha 8
+            @Tag.linha8_data = @Tag.linha9_data;
+            @Tag.linha8_motor = @Tag.linha9_motor;
+            @Tag.linha8_descrição = @Tag.linha9_descrição;
+            @Tag.linha8_urgencia = @Tag.linha9_urgencia;
+            @Tag.linha8_status = @Tag.linha9_status;
+ 
+            // linha 10 -> linha 9
+            @Tag.linha9_data = @Tag.linha10_data;
+            @Tag.linha9_motor = @Tag.linha10_motor;
+            @Tag.linha9_descrição = @Tag.linha10_descrição;
+            @Tag.linha9_urgencia = @Tag.linha10_urgencia;
+            @Tag.linha9_status = @Tag.linha10_status;
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 6 ----------------------------
+    if ((@Tag.linha6ocupada == 1) && (@Tag.açãoAgenda6 != -1) && (!excluiu))
+    {
+        int acao6 = @Tag.açãoAgenda6;
+        @Tag.açãoAgenda6 = -1;
+ 
+        if (acao6 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha6_status != 3)
+            {
+                @Tag.linha6_status = 2;
+            }
+        }
+		else if (acao6 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha6_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha6_data, @Tag.linha6_motor, @Tag.linha6_descrição, @Tag.linha6_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha6_status = 3;
+		}
+        else if (acao6 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha6_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 7 -> linha 6
+            @Tag.linha6_data = @Tag.linha7_data;
+            @Tag.linha6_motor = @Tag.linha7_motor;
+            @Tag.linha6_descrição = @Tag.linha7_descrição;
+            @Tag.linha6_urgencia = @Tag.linha7_urgencia;
+            @Tag.linha6_status = @Tag.linha7_status;
+ 
+            // linha 8 -> linha 7
+            @Tag.linha7_data = @Tag.linha8_data;
+            @Tag.linha7_motor = @Tag.linha8_motor;
+            @Tag.linha7_descrição = @Tag.linha8_descrição;
+            @Tag.linha7_urgencia = @Tag.linha8_urgencia;
+            @Tag.linha7_status = @Tag.linha8_status;
+ 
+            // linha 9 -> linha 8
+            @Tag.linha8_data = @Tag.linha9_data;
+            @Tag.linha8_motor = @Tag.linha9_motor;
+            @Tag.linha8_descrição = @Tag.linha9_descrição;
+            @Tag.linha8_urgencia = @Tag.linha9_urgencia;
+            @Tag.linha8_status = @Tag.linha9_status;
+ 
+            // linha 10 -> linha 9
+            @Tag.linha9_data = @Tag.linha10_data;
+            @Tag.linha9_motor = @Tag.linha10_motor;
+            @Tag.linha9_descrição = @Tag.linha10_descrição;
+            @Tag.linha9_urgencia = @Tag.linha10_urgencia;
+            @Tag.linha9_status = @Tag.linha10_status;
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 7 ----------------------------
+    if ((@Tag.linha7ocupada == 1) && (@Tag.açãoAgenda7 != -1) && (!excluiu))
+    {
+        int acao7 = @Tag.açãoAgenda7;
+        @Tag.açãoAgenda7 = -1;
+ 
+        if (acao7 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha7_status != 3)
+            {
+                @Tag.linha7_status = 2;
+            }
+        }
+        else if (acao7 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha7_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha7_data, @Tag.linha7_motor, @Tag.linha7_descrição, @Tag.linha7_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha7_status = 3;
+		}
+        else if (acao7 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha7_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 8 -> linha 7
+            @Tag.linha7_data = @Tag.linha8_data;
+            @Tag.linha7_motor = @Tag.linha8_motor;
+            @Tag.linha7_descrição = @Tag.linha8_descrição;
+            @Tag.linha7_urgencia = @Tag.linha8_urgencia;
+            @Tag.linha7_status = @Tag.linha8_status;
+ 
+            // linha 9 -> linha 8
+            @Tag.linha8_data = @Tag.linha9_data;
+            @Tag.linha8_motor = @Tag.linha9_motor;
+            @Tag.linha8_descrição = @Tag.linha9_descrição;
+            @Tag.linha8_urgencia = @Tag.linha9_urgencia;
+            @Tag.linha8_status = @Tag.linha9_status;
+ 
+            // linha 10 -> linha 9
+            @Tag.linha9_data = @Tag.linha10_data;
+            @Tag.linha9_motor = @Tag.linha10_motor;
+            @Tag.linha9_descrição = @Tag.linha10_descrição;
+            @Tag.linha9_urgencia = @Tag.linha10_urgencia;
+            @Tag.linha9_status = @Tag.linha10_status;
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 8 ----------------------------
+    if ((@Tag.linha8ocupada == 1) && (@Tag.açãoAgenda8 != -1) && (!excluiu))
+    {
+        int acao8 = @Tag.açãoAgenda8;
+        @Tag.açãoAgenda8 = -1;
+ 
+        if (acao8 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha8_status != 3)
+            {
+                @Tag.linha8_status = 2;
+            }
+        }
+        else if (acao8 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha8_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha8_data, @Tag.linha8_motor, @Tag.linha8_descrição, @Tag.linha8_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha8_status = 3;
+		}
+        else if (acao8 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha8_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 9 -> linha 8
+            @Tag.linha8_data = @Tag.linha9_data;
+            @Tag.linha8_motor = @Tag.linha9_motor;
+            @Tag.linha8_descrição = @Tag.linha9_descrição;
+            @Tag.linha8_urgencia = @Tag.linha9_urgencia;
+            @Tag.linha8_status = @Tag.linha9_status;
+ 
+            // linha 10 -> linha 9
+            @Tag.linha9_data = @Tag.linha10_data;
+            @Tag.linha9_motor = @Tag.linha10_motor;
+            @Tag.linha9_descrição = @Tag.linha10_descrição;
+            @Tag.linha9_urgencia = @Tag.linha10_urgencia;
+            @Tag.linha9_status = @Tag.linha10_status;
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 9 ----------------------------
+    if ((@Tag.linha9ocupada == 1) && (@Tag.açãoAgenda9 != -1) && (!excluiu))
+    {
+        int acao9 = @Tag.açãoAgenda9;
+        @Tag.açãoAgenda9 = -1;
+ 
+        if (acao9 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha9_status != 3)
+            {
+                @Tag.linha9_status = 2;
+            }
+        }
+        else if (acao9 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha9_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha9_data, @Tag.linha9_motor, @Tag.linha9_descrição, @Tag.linha9_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha9_status = 3;
+		}
+        else if (acao9 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha9_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 10 -> linha 9
+            @Tag.linha9_data = @Tag.linha10_data;
+            @Tag.linha9_motor = @Tag.linha10_motor;
+            @Tag.linha9_descrição = @Tag.linha10_descrição;
+            @Tag.linha9_urgencia = @Tag.linha10_urgencia;
+            @Tag.linha9_status = @Tag.linha10_status;
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 10 ----------------------------
+    if ((@Tag.linha10ocupada == 1) && (@Tag.açãoAgenda10 != -1) && (!excluiu))
+    {
+        int acao10 = @Tag.açãoAgenda10;
+        @Tag.açãoAgenda10 = -1;
+ 
+        if (acao10 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha10_status != 3)
+            {
+                @Tag.linha10_status = 2;
+            }
+        }
+		else if (acao10 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha10_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha10_data, @Tag.linha10_motor, @Tag.linha10_descrição, @Tag.linha10_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha10_status = 3;
+		}
+        else if (acao10 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha10_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 11 -> linha 10
+            @Tag.linha10_data = @Tag.linha11_data;
+            @Tag.linha10_motor = @Tag.linha11_motor;
+            @Tag.linha10_descrição = @Tag.linha11_descrição;
+            @Tag.linha10_urgencia = @Tag.linha11_urgencia;
+            @Tag.linha10_status = @Tag.linha11_status;
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 11 ----------------------------
+    if ((@Tag.linha11ocupada == 1) && (@Tag.açãoAgenda11 != -1) && (!excluiu))
+    {
+        int acao11 = @Tag.açãoAgenda11;
+        @Tag.açãoAgenda11 = -1;
+ 
+        if (acao11 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha11_status != 3)
+            {
+                @Tag.linha11_status = 2;
+            }
+        }
+		else if (acao11 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha11_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha11_data, @Tag.linha11_motor, @Tag.linha11_descrição, @Tag.linha11_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha11_status = 3;
+		}
+        else if (acao11 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha11_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 12 -> linha 11
+            @Tag.linha11_data = @Tag.linha12_data;
+            @Tag.linha11_motor = @Tag.linha12_motor;
+            @Tag.linha11_descrição = @Tag.linha12_descrição;
+            @Tag.linha11_urgencia = @Tag.linha12_urgencia;
+            @Tag.linha11_status = @Tag.linha12_status;
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 12 ----------------------------
+    if ((@Tag.linha12ocupada == 1) && (@Tag.açãoAgenda12 != -1) && (!excluiu))
+    {
+        int acao12 = @Tag.açãoAgenda12;
+        @Tag.açãoAgenda12 = -1;
+ 
+        if (acao12 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha12_status != 3)
+            {
+                @Tag.linha12_status = 2;
+            }
+        }
+		else if (acao12 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha12_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha12_data, @Tag.linha12_motor, @Tag.linha12_descrição, @Tag.linha12_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha12_status = 3;
+		}
+        else if (acao12 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha12_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // linha 13 -> linha 12
+            @Tag.linha12_data = @Tag.linha13_data;
+            @Tag.linha12_motor = @Tag.linha13_motor;
+            @Tag.linha12_descrição = @Tag.linha13_descrição;
+            @Tag.linha12_urgencia = @Tag.linha13_urgencia;
+            @Tag.linha12_status = @Tag.linha13_status;
+ 
+            // limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // ---------------------------- LINHA 13 ----------------------------
+    if ((@Tag.linha13ocupada == 1) && (@Tag.açãoAgenda13 != -1) && (!excluiu))
+    {
+        int acao13 = @Tag.açãoAgenda13;
+        @Tag.açãoAgenda13 = -1;
+ 
+        if (acao13 == 0)                                  // INICIAR
+        {
+            if (@Tag.linha13_status != 3)
+            {
+                @Tag.linha13_status = 2;
+            }
+        }
+		else if (acao13 == 1)                             // CONCLUIR
+		{
+		    if (@Tag.linha13_status != 3)
+		    {
+		        RegistrarHistorico(@Tag.linha13_data, @Tag.linha13_motor, @Tag.linha13_descrição, @Tag.linha13_urgencia);
+		 
+		        if (@Tag.ManuPendentes > 0)
+		        {
+		            @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+		        }
+		    }
+		    @Tag.linha13_status = 3;
+		}
+        else if (acao13 == 2)                             // EXCLUIR
+        {
+            if ((@Tag.linha13_status != 3) && (@Tag.ManuPendentes > 0))
+            {
+                @Tag.ManuPendentes = @Tag.ManuPendentes - 1;
+            }
+ 
+            // não há linha abaixo: só limpa a linha 13
+            @Tag.linha13_data = DateTime.MinValue;
+            @Tag.linha13_motor = "";
+            @Tag.linha13_descrição = "";
+            @Tag.linha13_urgencia = 0;
+            @Tag.linha13_status = 0;
+ 
+            excluiu = true;
+        }
+    }
+ 
+    // se houve exclusão, garante que nenhum dropdown fique com ação pendente
+    if (excluiu)
+    {
+        @Tag.açãoAgenda1 = -1;
+        @Tag.açãoAgenda2 = -1;
+        @Tag.açãoAgenda3 = -1;
+        @Tag.açãoAgenda4 = -1;
+        @Tag.açãoAgenda5 = -1;
+        @Tag.açãoAgenda6 = -1;
+        @Tag.açãoAgenda7 = -1;
+        @Tag.açãoAgenda8 = -1;
+        @Tag.açãoAgenda9 = -1;
+        @Tag.açãoAgenda10 = -1;
+        @Tag.açãoAgenda11 = -1;
+        @Tag.açãoAgenda12 = -1;
+        @Tag.açãoAgenda13 = -1;
+    }
+ 
+    // reconfere as linhas ocupadas depois das ações
+    if (string.IsNullOrWhiteSpace(@Tag.linha1_descrição)) { @Tag.linha1ocupada = 0; } else { @Tag.linha1ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha2_descrição)) { @Tag.linha2ocupada = 0; } else { @Tag.linha2ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha3_descrição)) { @Tag.linha3ocupada = 0; } else { @Tag.linha3ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha4_descrição)) { @Tag.linha4ocupada = 0; } else { @Tag.linha4ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha5_descrição)) { @Tag.linha5ocupada = 0; } else { @Tag.linha5ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha6_descrição)) { @Tag.linha6ocupada = 0; } else { @Tag.linha6ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha7_descrição)) { @Tag.linha7ocupada = 0; } else { @Tag.linha7ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha8_descrição)) { @Tag.linha8ocupada = 0; } else { @Tag.linha8ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha9_descrição)) { @Tag.linha9ocupada = 0; } else { @Tag.linha9ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha10_descrição)) { @Tag.linha10ocupada = 0; } else { @Tag.linha10ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha11_descrição)) { @Tag.linha11ocupada = 0; } else { @Tag.linha11ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha12_descrição)) { @Tag.linha12ocupada = 0; } else { @Tag.linha12ocupada = 1; }
+    if (string.IsNullOrWhiteSpace(@Tag.linha13_descrição)) { @Tag.linha13ocupada = 0; } else { @Tag.linha13ocupada = 1; }
+ 
+    if ((@Tag.linha1ocupada == 1) && (@Tag.linha2ocupada == 1) && (@Tag.linha3ocupada == 1) && (@Tag.linha4ocupada == 1) && (@Tag.linha5ocupada == 1) && (@Tag.linha6ocupada == 1) && (@Tag.linha7ocupada == 1) && (@Tag.linha8ocupada == 1) && (@Tag.linha9ocupada == 1) && (@Tag.linha10ocupada == 1) && (@Tag.linha11ocupada == 1) && (@Tag.linha12ocupada == 1) && (@Tag.linha13ocupada == 1))
+    {
+        @Tag.LimiteLinhasAtingido = 1;
+    }
+    else
+    {
+        @Tag.LimiteLinhasAtingido = 0;
+    }
+ 
+ 
+    // ============================================================
+    // 3. NOVA MANUTENÇÃO
+    // ============================================================
+    if (@Tag.NovaManutenção == 1)
+    {
+        // ---------------- VERIFICAÇÃO DA DATA ----------------
+        try
+        {
+            @Tag.dataManutenção = new DateTime(@Tag.Ano, @Tag.mesNumero, @Tag.Dia);
+ 
+            if (@Tag.dataManutenção < DateTime.Today)
+            {
+                @Tag.dataValida = 0;
+            }
+            else
+            {
+                @Tag.dataValida = 1;
+            }
+        }
+        catch
+        {
+            // data inexistente (ex.: 31/02)
+            @Tag.dataValida = 0;
+        }
+ 
+        // ---------------- VERIFICAÇÃO DO MOTOR ----------------
+        if (@Tag.motor1_sel == 1)
+        {
+            @Tag.mototr2_sel = 0;
+            @Tag.motor_selecionado = 1;
+            @Tag.motor = "Motor 1";
+        }
+        else if (@Tag.mototr2_sel == 1)
+        {
+            @Tag.motor1_sel = 0;
+            @Tag.motor_selecionado = 1;
+            @Tag.motor = "Motor 2";
+        }
+        else
+        {
+            @Tag.motor_selecionado = 0;
+        }
+ 
+        // ---------------- VERIFICAÇÃO DA DESCRIÇÃO ----------------
+        if (string.IsNullOrWhiteSpace(@Tag.descriçãoManutenção))
+        {
+            @Tag.descriçãoValida = 0;
+        }
+        else
+        {
+            @Tag.descriçãoValida = 1;
+        }
+ 
+        // ---------------- VERIFICAÇÃO DA URGÊNCIA ----------------
+        if (@Tag.urgencia == 0)
+        {
+            @Tag.urgenciaValida = 0;
+        }
+        else
+        {
+            @Tag.urgenciaValida = 1;
+        }
+ 
+        // ---------------- VERIFICAÇÃO DO STATUS ----------------
+        if (@Tag.status1 == 0)
+        {
+            @Tag.statusValido = 0;
+        }
+        else
+        {
+            @Tag.statusValido = 1;
+        }
+ 
+        // ---------------- SALVAR ----------------
+        if (@Tag.botaoSalvar == 1)
+        {
+            @Tag.botaoSalvar = 0;
+ 
+            if ((@Tag.dataValida == 1) && (@Tag.descriçãoValida == 1) && (@Tag.urgenciaValida == 1) && (@Tag.statusValido == 1) && (@Tag.motor_selecionado == 1))
+            {
+                if (@Tag.LimiteLinhasAtingido == 1)
+                {
+                    System.Windows.MessageBox.Show("Limite de manutenções atingido. Exclua uma para adicionar outra.");
+                }
+                else
+                {
+                    // else if: grava SOMENTE na primeira linha livre
+                    if (@Tag.linha1ocupada == 0)
+                    {
+                        @Tag.linha1_data = @Tag.dataManutenção;
+                        @Tag.linha1_motor = @Tag.motor;
+                        @Tag.linha1_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha1_urgencia = @Tag.urgencia;
+                        @Tag.linha1_status = @Tag.status1;
+                        @Tag.linha1ocupada = 1;
+                    }
+                    else if (@Tag.linha2ocupada == 0)
+                    {
+                        @Tag.linha2_data = @Tag.dataManutenção;
+                        @Tag.linha2_motor = @Tag.motor;
+                        @Tag.linha2_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha2_urgencia = @Tag.urgencia;
+                        @Tag.linha2_status = @Tag.status1;
+                        @Tag.linha2ocupada = 1;
+                    }
+                    else if (@Tag.linha3ocupada == 0)
+                    {
+                        @Tag.linha3_data = @Tag.dataManutenção;
+                        @Tag.linha3_motor = @Tag.motor;
+                        @Tag.linha3_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha3_urgencia = @Tag.urgencia;
+                        @Tag.linha3_status = @Tag.status1;
+                        @Tag.linha3ocupada = 1;
+                    }
+                    else if (@Tag.linha4ocupada == 0)
+                    {
+                        @Tag.linha4_data = @Tag.dataManutenção;
+                        @Tag.linha4_motor = @Tag.motor;
+                        @Tag.linha4_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha4_urgencia = @Tag.urgencia;
+                        @Tag.linha4_status = @Tag.status1;
+                        @Tag.linha4ocupada = 1;
+                    }
+                    else if (@Tag.linha5ocupada == 0)
+                    {
+                        @Tag.linha5_data = @Tag.dataManutenção;
+                        @Tag.linha5_motor = @Tag.motor;
+                        @Tag.linha5_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha5_urgencia = @Tag.urgencia;
+                        @Tag.linha5_status = @Tag.status1;
+                        @Tag.linha5ocupada = 1;
+                    }
+                    else if (@Tag.linha6ocupada == 0)
+                    {
+                        @Tag.linha6_data = @Tag.dataManutenção;
+                        @Tag.linha6_motor = @Tag.motor;
+                        @Tag.linha6_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha6_urgencia = @Tag.urgencia;
+                        @Tag.linha6_status = @Tag.status1;
+                        @Tag.linha6ocupada = 1;
+                    }
+                    else if (@Tag.linha7ocupada == 0)
+                    {
+                        @Tag.linha7_data = @Tag.dataManutenção;
+                        @Tag.linha7_motor = @Tag.motor;
+                        @Tag.linha7_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha7_urgencia = @Tag.urgencia;
+                        @Tag.linha7_status = @Tag.status1;
+                        @Tag.linha7ocupada = 1;
+                    }
+                    else if (@Tag.linha8ocupada == 0)
+                    {
+                        @Tag.linha8_data = @Tag.dataManutenção;
+                        @Tag.linha8_motor = @Tag.motor;
+                        @Tag.linha8_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha8_urgencia = @Tag.urgencia;
+                        @Tag.linha8_status = @Tag.status1;
+                        @Tag.linha8ocupada = 1;
+                    }
+                    else if (@Tag.linha9ocupada == 0)
+                    {
+                        @Tag.linha9_data = @Tag.dataManutenção;
+                        @Tag.linha9_motor = @Tag.motor;
+                        @Tag.linha9_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha9_urgencia = @Tag.urgencia;
+                        @Tag.linha9_status = @Tag.status1;
+                        @Tag.linha9ocupada = 1;
+                    }
+                    else if (@Tag.linha10ocupada == 0)
+                    {
+                        @Tag.linha10_data = @Tag.dataManutenção;
+                        @Tag.linha10_motor = @Tag.motor;
+                        @Tag.linha10_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha10_urgencia = @Tag.urgencia;
+                        @Tag.linha10_status = @Tag.status1;
+                        @Tag.linha10ocupada = 1;
+                    }
+                    else if (@Tag.linha11ocupada == 0)
+                    {
+                        @Tag.linha11_data = @Tag.dataManutenção;
+                        @Tag.linha11_motor = @Tag.motor;
+                        @Tag.linha11_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha11_urgencia = @Tag.urgencia;
+                        @Tag.linha11_status = @Tag.status1;
+                        @Tag.linha11ocupada = 1;
+                    }
+                    else if (@Tag.linha12ocupada == 0)
+                    {
+                        @Tag.linha12_data = @Tag.dataManutenção;
+                        @Tag.linha12_motor = @Tag.motor;
+                        @Tag.linha12_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha12_urgencia = @Tag.urgencia;
+                        @Tag.linha12_status = @Tag.status1;
+                        @Tag.linha12ocupada = 1;
+                    }
+                    else if (@Tag.linha13ocupada == 0)
+                    {
+                        @Tag.linha13_data = @Tag.dataManutenção;
+                        @Tag.linha13_motor = @Tag.motor;
+                        @Tag.linha13_descrição = @Tag.descriçãoManutenção;
+                        @Tag.linha13_urgencia = @Tag.urgencia;
+                        @Tag.linha13_status = @Tag.status1;
+                        @Tag.linha13ocupada = 1;
+                    }
+ 
+                    @Tag.SalvarOk = @Tag.SalvarOk + 1;
+                    @Tag.ManuPendentes = @Tag.ManuPendentes + 1;
+                    @Tag.NovaManutenção = 0;
+ 
+                    // limpa os campos do formulário
+                    @Tag.descriçãoManutenção = "";
+                    @Tag.motor = "";
+                    @Tag.motor1_sel = 0;
+                    @Tag.mototr2_sel = 0;
+                    @Tag.motor_selecionado = 0;
+                }
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Erro! Informações incompletas ou inválidas");
+            }
+        }
+    }
+}
+ 
+ 
+
+
+public void DisplayClosing()
+{
+    @Tag.TelaAtiva_Agenda = 0;
+}
+public bool DialogOnOK()
+{
+    return true;}
+ 
+private void RegistrarHistorico(DateTimeOffset dataPrevista, string motor, string descricao, int urgencia)
+{
+    @Tag.hist_dataPrevista = dataPrevista.DateTime.ToString("yyyy-MM-dd");
+    @Tag.hist_dataConclusao = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+    @Tag.histMotor = motor ?? "";
+    @Tag.hist_descricao = (descricao ?? "").Replace("'", " ");
+    @Tag.hist_urgencia = urgencia;
+
+    @Dataset.Query.InsereHistorico.ExecuteCommand();
+}
+
+private bool Atrasada(bool ocupada, bool naoConcluida, DateTimeOffset dataPrevista)
+{
+    if (!ocupada) { return false; }
+    if (!naoConcluida) { return false; }
+
+    return dataPrevista.DateTime.Date < DateTime.Today;
+}
